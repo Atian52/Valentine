@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Message for You</title>
+    <style>
+        body {
+            margin: 0; padding: 0; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background-color: #ffdde1; font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden; text-align: center; transition: background 0.5s;
+        }
+
+        .container { 
+            width: 90%; 
+            max-width: 400px; 
+            padding: 25px; 
+            background: white;
+            border: 4px solid #d63384; 
+            border-radius: 20px;
+            box-shadow: 8px 8px 0px #d63384; 
+            position: relative;
+            margin: 20px;
+            box-sizing: border-box;
+        }
+
+        #page2, #page3 { display: none; }
+
+        .envelope-wrapper {
+            font-size: clamp(60px, 15vw, 80px);
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: float 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .gif-container img { 
+            width: 100%; 
+            max-width: 200px;
+            border-radius: 15px; margin-bottom: 20px; 
+            border: 3px solid #d63384;
+        }
+
+        h1, h2, .success-text { 
+            color: #d63384; 
+            text-shadow: 2px 2px 0px #ffb3c1; 
+        }
+
+        .btn-group { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 15px; 
+            margin-top: 30px; 
+            position: relative;
+            min-height: 100px;
+        }
+
+        button { 
+            padding: 12px 25px; 
+            font-size: 1rem; 
+            font-weight: bold;
+            border: 3px solid #000; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        #yesBtn { background-color: #ff4d6d; color: white; z-index: 10; border-color: #800020; box-shadow: 4px 4px 0px #800020; }
+        #noBtn { background-color: #adb5bd; color: white; border-color: #495057; box-shadow: 4px 4px 0px #495057; }
+        
+        .calendar-box { 
+            background: #fff0f3; padding: 15px; border-radius: 15px; margin-top: 20px; 
+            border: 3px solid #d63384;
+            box-shadow: 5px 5px 0px #d63384;
+        }
+
+        input[type="datetime-local"] { 
+            padding: 10px; border-radius: 8px; border: 3px solid #d63384; 
+            margin-bottom: 10px; width: 90%; font-family: inherit; font-size: 1rem;
+        }
+
+        .send-btn { 
+            background-color: #5865F2; color: white; font-size: 0.9rem; 
+            margin-top: 10px; border-color: #2c2f33; box-shadow: 4px 4px 0px #2c2f33;
+            width: 100%;
+        }
+
+        .wa-btn {
+            background-color: #25D366; color: white; border-color: #075E54;
+            box-shadow: 4px 4px 0px #075E54;
+        }
+
+        .message { font-size: 0.95rem; color: #444; line-height: 1.4; }
+    </style>
+</head>
+<body onclick="startExperience()">
+
+    <audio id="bgMusic" loop>
+        <source src="musik.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="page1" class="container">
+        <div class="envelope-wrapper">✉️</div>
+        <h1>Hello! I have something to tell you</h1>
+        <p style="color: #888; font-weight: bold; border-top: 1px dashed #d63384; padding-top: 10px; font-size: 0.8rem;">Tap anywhere to open</p>
+    </div>
+
+    <div id="page2" class="container">
+        <div class="gif-container">
+            <img src="cute1.gif" alt="cute gif">
+        </div>
+        <h2>Will you be my Valentine? 🥺👉👈</h2>
+        <div class="btn-group">
+            <button id="yesBtn" onclick="goToSuccess(event)">Yes 🥰</button>
+            <button id="noBtn" onclick="makeYesBigger(event)">No 😒</button>
+        </div>
+    </div>
+
+    <div id="page3" class="container">
+        <div class="gif-container">
+            <img src="cute.gif" alt="cute gif success">
+        </div>
+        <div class="success-text" style="font-size: 1.8rem;"><b>Yesssss! ❤️🤩✨</b></div>
+        <p class="message">Thank you for filling my days with joy and making my heart beat faster. There is no one in the world I'd rather be with than you. I love you so much! ✨❤️</p>
+        
+        <div class="calendar-box">
+            <p style="font-weight: bold; color: #d63384; margin-bottom: 10px;">📅 Atur Jadwal Ketemu Kita:</p>
+            <input type="datetime-local" id="meetingDate">
+            
+            <button class="send-btn" onclick="sendToDiscord()">Kirim Jadwal ke Discord 🚀</button>
+            <button class="send-btn wa-btn" onclick="sendToWhatsApp()">Kirim Jadwal ke WhatsApp 💬</button>
+        </div>
+    </div>
+
+    <script>
+        let yesSize = 1;
+        // JANGAN LUPA ISI WEBHOOK DISCORD KAMU DI SINI
+        const DISCORD_WEBHOOK_URL = "ISI_URL_WEBHOOK_DISCORD_KAMU_DISINI";
+
+        function startExperience() {
+            const music = document.getElementById('bgMusic');
+            music.play().catch(e => console.log("Audio play blocked by browser"));
+
+            const env = document.querySelector('.envelope-wrapper');
+            if(env) env.innerHTML = "📂";
+            
+            setTimeout(() => {
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page2').style.display = 'block';
+                document.body.onclick = null;
+            }, 300);
+        }
+
+        function makeYesBigger(event) {
+            event.stopPropagation();
+            const yesBtn = document.getElementById('yesBtn');
+            yesSize += 0.3;
+            yesBtn.style.transform = `scale(${yesSize})`;
+            if (yesSize > 4) {
+                document.getElementById('noBtn').style.display = 'none';
+            }
+        }
+
+        function goToSuccess(event) {
+            event.stopPropagation();
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').style.display = 'block';
+            document.body.style.backgroundColor = '#fff0f3';
+        }
+
+        function sendToDiscord() {
+            const dateValue = document.getElementById('meetingDate').value;
+            if (!dateValue) return alert("Pilih tanggal dulu dong sayang! 😊");
+
+            const payload = {
+                content: `💖 **Valentine Update!** 💖\nDia sudah bilang YES! dan mengajak bertemu pada:\n📅 **Waktu:** ${new Date(dateValue).toLocaleString('id-ID')}`
+            };
+
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => alert("Berhasil! Jadwal terkirim ke Discord ❤️")).catch(() => alert("Gagal kirim ke Discord!"));
+        }
+
+        function sendToWhatsApp() {
+            const dateValue = document.getElementById('meetingDate').value;
+            if (!dateValue) return alert("Pilih tanggal dulu dong sayang! 😊");
+
+            // Mengatur format tanggal agar lebih manusiawi (Contoh: Senin, 14 Februari 2026)
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            const formatTgl = new Date(dateValue).toLocaleString('id-ID', options);
+            
+            const pesan = encodeURIComponent(`Halo! Aku mau bilang YES! 🥰\n\nKita ketemu tanggal ini ya:\n📅 ${formatTgl}\n\nI love you so much! ❤️`);
+            
+            // Membuka WhatsApp Share (User akan memilih kontak sendiri)
+            window.open(`https://api.whatsapp.com/send?text=${pesan}`, '_blank');
+        }
+    </script>
+</body>
+</html>
